@@ -1,455 +1,515 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Plant Monitor Dashboard</title>
-  <meta charset="UTF-8">
-
-  <!-- ===================== CSS ===================== -->
+  <title>Plant Monitor</title>
+  <meta charset="UTF-8" />
   <style>
-    /* ====== GLOBAL ====== */
+    /* ===== GLOBAL ===== */
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
-      background: #f5f5f7;
-      color: #1d1d1f;
+      background: radial-gradient(circle at top, #0b1b3b 0, #020617 45%, #000 100%);
+      color: #0f172a;
     }
+    a { text-decoration: none; }
 
-    /* ====== SIDEBAR ====== */
-    .sidebar {
-      width: 240px;
-      height: 100vh;
-      position: fixed;
+    /* ===== TOP NAV (WAVENET STYLE) ===== */
+    .top-nav {
+      position: sticky;
       top: 0;
-      left: 0;
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.7);
-      border-right: 1px solid rgba(0,0,0,0.08);
-      padding-top: 30px;
-    }
-
-    .sidebar a {
-      display: block;
-      padding: 14px 25px;
-      margin: 6px 12px;
-      border-radius: 12px;
-      color: #1d1d1f;
-      text-decoration: none;
-      font-size: 15px;
-      transition: 0.2s;
-    }
-
-    .sidebar a:hover {
-      background: rgba(0,0,0,0.05);
-    }
-
-    .active {
-      background: #0071e3;
-      color: white !important;
-    }
-
-    /* ====== MAIN CONTENT ====== */
-    .main {
-      margin-left: 260px;
-      padding: 40px;
-      min-height: 100vh;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ====== TOP BAR (MACOS STYLE) ====== */
-    .logo-header {
-      background: linear-gradient(135deg, #ffffff, #f0f0f5);
-      border-radius: 18px;
-      padding: 16px 20px;
-      margin-bottom: 24px;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+      z-index: 50;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 10px 40px;
     }
-
-    .window-dots {
+    .nav-left {
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: #111827;
     }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
+    .nav-logo-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      background: radial-gradient(circle at top left, #2563eb, #1d4ed8);
     }
-
-    .dot.red { background: #ff5f57; }
-    .dot.yellow { background: #febc2e; }
-    .dot.green { background: #28c840; }
-
-    .logo-title {
-      font-size: 22px;
+    .nav-center {
+      display: flex;
+      gap: 18px;
+      font-size: 14px;
+    }
+    .nav-link {
+      color: #4b5563;
+      padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+    }
+    .nav-link:hover {
+      color: #111827;
+      border-bottom-color: #2563eb;
+    }
+    .nav-link.active {
+      color: #111827;
+      border-bottom-color: #2563eb;
       font-weight: 600;
     }
-
-    .logo-subtitle {
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       font-size: 13px;
-      color: #6e6e73;
     }
-
-    /* ====== CARDS ====== */
-    .card {
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(25px);
-      border-radius: 20px;
-      padding: 24px;
-      margin-bottom: 24px;
-      border: 1px solid rgba(0,0,0,0.06);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-      transition: 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-    }
-
-    /* ====== BUTTONS ====== */
-    button {
-      background: #0071e3;
-      color: white;
+    .btn-primary {
+      background: linear-gradient(90deg, #2563eb, #4f46e5);
+      color: #ffffff;
       border: none;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-size: 14px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
       cursor: pointer;
-      transition: 0.2s;
+    }
+    .btn-primary:hover { filter: brightness(1.1); }
+
+    /* ===== MAIN WRAPPER ===== */
+    .main {
+      max-width: 1100px;
+      margin: 24px auto 40px auto;
+      padding: 0 24px;
+      color: #e5e7eb;
     }
 
-    button:hover {
-      background: #0a84ff;
+    /* ===== HERO ===== */
+    .hero {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+      justify-content: space-between;
+      background: radial-gradient(circle at top left, #1d4ed8, #020617);
+      border-radius: 24px;
+      padding: 28px 30px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
+      margin-bottom: 28px;
+    }
+    .hero-text h1 {
+      font-size: 28px;
+      margin: 0 0 8px 0;
+      color: #f9fafb;
+    }
+    .hero-text p {
+      color: #cbd5f5;
+      max-width: 420px;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .hero-panel {
+      width: 240px;
+      height: 200px;
+      border-radius: 24px;
+      background: radial-gradient(circle at top left, rgba(96,165,250,0.9), rgba(30,64,175,0.9));
+      box-shadow:
+        0 18px 40px rgba(15, 23, 42, 0.9),
+        inset 0 0 40px rgba(191, 219, 254, 0.35);
+      border: 1px solid rgba(191, 219, 254, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      width: 140%;
+      height: 60%;
+      top: -30%;
+      left: -20%;
+      background: radial-gradient(circle at top, rgba(248,250,252,0.7), transparent);
+      opacity: 0.6;
+      transform: rotate(-8deg);
     }
 
-    /* ====== INPUTS ====== */
+    /* ===== CARDS ===== */
+    .card {
+      background: radial-gradient(circle at top left, #111827, #020617);
+      border-radius: 20px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+      border: 1px solid #1f2937;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+    }
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    .card p { margin: 4px 0; }
+
     input {
-      padding: 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,0.15);
-      width: 250px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #e5e7eb;
       font-size: 14px;
     }
+    input::placeholder { color: #6b7280; }
 
-    /* ====== CANVAS ====== */
     canvas {
-      background: white;
-      border-radius: 20px;
-      padding: 10px;
-      border: 1px solid rgba(0,0,0,0.1);
-      margin-bottom: 10px;
+      background: #020617;
+      border-radius: 16px;
+      padding: 8px;
+      border: 1px solid #1f2937;
+      margin-top: 8px;
     }
 
-    /* LIVE INDICATOR */
+    /* ===== LIVE INDICATOR ===== */
     #liveIndicator.live {
-      color: #0071e3;
+      color: #3b82f6;
       font-weight: 600;
       margin-left: 10px;
     }
 
-    /* LEADERBOARD TABLE */
-    #leaderboardTable {
-      border-collapse: collapse;
+    /* ===== TABLE ===== */
+    table {
       width: 100%;
-      color: #1d1d1f;
+      border-collapse: collapse;
       font-size: 14px;
+      color: #e5e7eb;
     }
-
-    #leaderboardTable th {
-      background: #f2f2f7;
-      padding: 10px;
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid #1f2937;
+    }
+    th {
+      background: #1e3a8a;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      font-size: 11px;
+    }
+    tr:nth-child(even) { background: rgba(30,58,138,0.25); }
+    tr:hover { background: rgba(59,130,246,0.35); }
+
+    /* ===== PAGES ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== AUTH FORMS ===== */
+    .auth-form {
+      max-width: 360px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .auth-form label {
+      font-size: 13px;
+      color: #d1d5db;
+    }
+    .auth-form input {
+      width: 100%;
+    }
+    .auth-note {
       font-size: 12px;
+      color: #9ca3af;
     }
-
-    #leaderboardTable td {
-      padding: 10px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-
-    #leaderboardTable tr:nth-child(even) {
-      background: #fafafa;
-    }
-
-    #leaderboardTable tr:hover {
-      background: #e5f1ff;
+    .link {
+      color: #60a5fa;
       cursor: pointer;
+      font-size: 13px;
+    }
+    .link:hover { text-decoration: underline; }
+
+    /* SMALL */
+    @media (max-width: 800px) {
+      .hero { flex-direction: column; align-items: flex-start; }
+      .hero-panel { width: 100%; }
+      .nav-center { display: none; }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- ===================== SIDEBAR ===================== -->
-  <div class="sidebar">
-    <a class="active" onclick="showPage('dashboard', this)">🌱 Dashboard</a>
-    <a onclick="showPage('sensors', this)">📊 Sensors</a>
-    <a onclick="showPage('analytics', this)">📈 Analytics</a>
-    <a onclick="showPage('climate', this)">🌍 Climate Trends</a>
-    <a onclick="showPage('settings', this)">⚙️ Settings</a>
-    <a onclick="showPage('carbon', this)">🌫️ Carbon Footprint</a>
-    <a onclick="showPage('game', this)">🎮 Plant Game</a>
-    <a onclick="showPage('leaderboard', this)">🏆 Leaderboard</a>
-    <a onclick="showPage('achievements', this)">🎖️ Achievements</a>
-    <a onclick="showPage('biography', this)">👤 Biography</a>
-    <a onclick="showPage('about', this)">❓ About</a>
-    <a onclick="connectUSB()">🔌 Connect</a>
+  <!-- TOP NAV -->
+  <div class="top-nav">
+    <div class="nav-left">
+      <div class="nav-logo-dot"></div>
+      <span>Plant Monitor</span>
+    </div>
+    <div class="nav-center">
+      <span class="nav-link active" onclick="showPage('dashboard', this)">Dashboard</span>
+      <span class="nav-link" onclick="showPage('sensors', this)">Sensors</span>
+      <span class="nav-link" onclick="showPage('analytics', this)">Analytics</span>
+      <span class="nav-link" onclick="showPage('climate', this)">Climate</span>
+      <span class="nav-link" onclick="showPage('game', this)">Game</span>
+      <span class="nav-link" onclick="showPage('leaderboard', this)">Leaderboard</span>
+      <span class="nav-link" onclick="showPage('achievements', this)">Achievements</span>
+      <span class="nav-link" onclick="showPage('biography', this)">Biography</span>
+      <span class="nav-link" onclick="showPage('about', this)">About</span>
+      <span class="nav-link" onclick="showPage('settings', this)">Settings</span>
+      <span class="nav-link" onclick="showPage('carbon', this)">Carbon</span>
+      <span class="nav-link admin-link" style="display:none;" onclick="showPage('admin', this)">User Management</span>
+    </div>
+    <div class="nav-right">
+      <span id="currentUserLabel" style="color:#4b5563;">Not signed in</span>
+      <button class="btn-primary" onclick="showPage('signin', null)">Sign In</button>
+    </div>
   </div>
 
-  <!-- ===================== DASHBOARD ===================== -->
-  <div id="dashboard" class="main">
-    <div class="logo-header">
-      <div style="display:flex; align-items:center; gap:16px;">
-        <div class="window-dots">
-          <div class="dot red"></div>
-          <div class="dot yellow"></div>
-          <div class="dot green"></div>
-        </div>
-        <div>
-          <div class="logo-title">Plant Monitor</div>
-          <div class="logo-subtitle">Eco‑Smart Sensor & Climate Dashboard</div>
-        </div>
+  <div class="main">
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-text">
+        <h1>Let’s make your plant brilliant.</h1>
+        <p>
+          A modern dashboard for soil data, climate insights, and a playful plant‑care game—
+          designed and built by Mohamed.
+        </p>
+      </div>
+      <div class="hero-panel"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="page active">
+      <div class="card">
+        <h2>Soil Moisture</h2>
+        <p id="moistureValue">-- %</p>
+      </div>
+      <div class="card">
+        <h2>Soil Temperature</h2>
+        <p id="tempValue">-- °C</p>
+      </div>
+      <div class="card">
+        <h2>Plant Health Status</h2>
+        <p id="healthStatus">Waiting for data...</p>
+        <ul id="problemList"></ul>
       </div>
     </div>
 
-    <div class="card">
-      <h2>Soil Moisture</h2>
-      <p id="moistureValue">-- %</p>
-    </div>
-
-    <div class="card">
-      <h2>Soil Temperature</h2>
-      <p id="tempValue">-- °C</p>
-    </div>
-
-    <div class="card">
-      <h2>Plant Health Status</h2>
-      <p id="healthStatus">Waiting for data...</p>
-      <ul id="problemList"></ul>
-    </div>
-  </div>
-
-  <!-- ===================== SENSORS PAGE ===================== -->
-  <div id="sensors" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Live Sensor Data</div>
-      <div class="logo-subtitle">Real‑time readings from your plant</div>
-    </div>
-
-    <div class="card">
-      <h2>Soil Moisture</h2>
-      <p id="moistureValue2">-- %</p>
-    </div>
-
-    <div class="card">
-      <h2>Soil Temperature</h2>
-      <p id="tempValue2">-- °C</p>
-    </div>
-
-    <div class="card">
-      <h2>Live Mode</h2>
-      <button id="liveToggle" onclick="toggleLive()">Start Live Mode</button>
-      <span id="liveIndicator"></span>
-    </div>
-  </div>
-
-  <!-- ===================== ANALYTICS PAGE ===================== -->
-  <div id="analytics" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Analytics</div>
-      <div class="logo-subtitle">History of your plant’s environment</div>
-    </div>
-
-    <div class="card">
-      <h2>Soil Moisture History</h2>
-      <canvas id="moistureChart" width="400" height="200"></canvas>
-    </div>
-
-    <div class="card">
-      <h2>Soil Temperature History</h2>
-      <canvas id="tempChart" width="400" height="200"></canvas>
-    </div>
-  </div>
-
-  <!-- ===================== CLIMATE PAGE ===================== -->
-  <div id="climate" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Global Climate Trends</div>
-      <div class="logo-subtitle">See how the planet is changing</div>
-    </div>
-
-    <div class="card">
-      <h2>Global Temperature Increase (1880–2024)</h2>
-      <canvas id="globalTempChart"></canvas>
-    </div>
-
-    <div class="card">
-      <h2>CO₂ Levels Over Time</h2>
-      <canvas id="co2Chart"></canvas>
-    </div>
-
-    <div class="card">
-      <h2>Sea Level Rise</h2>
-      <canvas id="seaLevelChart"></canvas>
-    </div>
-  </div>
-
-  <!-- ===================== SETTINGS PAGE ===================== -->
-  <div id="settings" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Settings</div>
-      <div class="logo-subtitle">Tune your plant monitor</div>
-    </div>
-
-    <div class="card">
-      <h2>Set Dry Threshold</h2>
-      <input id="dryInput" type="number" placeholder="Enter %">
-      <button onclick="setDryLevel()">Save</button>
-    </div>
-  </div>
-
-  <!-- ===================== CARBON FOOTPRINT PAGE ===================== -->
-  <div id="carbon" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Carbon Footprint Calculator</div>
-      <div class="logo-subtitle">Estimate your daily CO₂ emissions</div>
-    </div>
-
-    <div class="card">
-      <h2>Daily Activity</h2>
-
-      <label>Car travel (km per day):</label><br>
-      <input id="carKm" type="number" placeholder="e.g. 20"><br><br>
-
-      <label>Electricity use (kWh per day):</label><br>
-      <input id="kwh" type="number" placeholder="e.g. 8"><br><br>
-
-      <label>Meat-based meals per day:</label><br>
-      <input id="meals" type="number" placeholder="e.g. 2"><br><br>
-
-      <button onclick="calcCarbon()">Calculate</button>
-
-      <p id="carbonResult" style="margin-top:15px;"></p>
-    </div>
-  </div>
-
-  <!-- ===================== GAME PAGE ===================== -->
-  <div id="game" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Plant Guardian Mini‑Game</div>
-      <div class="logo-subtitle">Keep your plant alive and thriving</div>
-    </div>
-
-    <div class="card">
-      <p><strong>Health:</strong> <span id="plantHealth">100</span> / 100</p>
-      <p><strong>Moisture:</strong> <span id="gameMoisture">50</span>%</p>
-      <p><strong>Temperature:</strong> <span id="gameTemp">24</span>°C</p>
-      <p><strong>Level:</strong> <span id="plantLevel">1</span></p>
-      <p id="gameStatus">Your plant has just been planted. Take care of it!</p>
-
-      <div id="plantSprite" style="font-size:80px; text-align:center; margin:20px 0;">
-        🌱
+    <!-- SENSORS -->
+    <div id="sensors" class="page">
+      <div class="card">
+        <h2>Live Sensor Data</h2>
+        <p><strong>Soil Moisture:</strong> <span id="moistureValue2">-- %</span></p>
+        <p><strong>Soil Temperature:</strong> <span id="tempValue2">-- °C</span></p>
+        <button class="btn-primary" id="liveToggle" onclick="toggleLive()">Start Live Mode</button>
+        <span id="liveIndicator"></span>
+        <button style="margin-left:10px;" onclick="connectUSB()">Connect USB</button>
       </div>
-
-      <button onclick="waterPlant()">💧 Water</button>
-      <button onclick="shadePlant()">🌳 Shade</button>
-      <button onclick="sunPlant()">☀️ More Sun</button>
-      <button onclick="fertilizePlant()">🌿 Fertilizer</button>
     </div>
+
+    <!-- ANALYTICS -->
+    <div id="analytics" class="page">
+      <div class="card">
+        <h2>Soil Moisture History</h2>
+        <canvas id="moistureChart" height="180"></canvas>
+      </div>
+      <div class="card">
+        <h2>Soil Temperature History</h2>
+        <canvas id="tempChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <!-- CLIMATE -->
+    <div id="climate" class="page">
+      <div class="card">
+        <h2>Global Temperature Increase (1880–2024)</h2>
+        <canvas id="globalTempChart" height="180"></canvas>
+      </div>
+      <div class="card">
+        <h2>CO₂ Levels Over Time</h2>
+        <canvas id="co2Chart" height="180"></canvas>
+      </div>
+      <div class="card">
+        <h2>Sea Level Rise</h2>
+        <canvas id="seaLevelChart" height="180"></canvas>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="settings" class="page">
+      <div class="card">
+        <h2>Set Dry Threshold</h2>
+        <input id="dryInput" type="number" placeholder="Enter %">
+        <button class="btn-primary" onclick="setDryLevel()">Save</button>
+      </div>
+    </div>
+
+    <!-- CARBON -->
+    <div id="carbon" class="page">
+      <div class="card">
+        <h2>Carbon Footprint Calculator</h2>
+        <label>Car travel (km per day):</label><br>
+        <input id="carKm" type="number" placeholder="e.g. 20"><br><br>
+        <label>Electricity use (kWh per day):</label><br>
+        <input id="kwh" type="number" placeholder="e.g. 8"><br><br>
+        <label>Meat-based meals per day:</label><br>
+        <input id="meals" type="number" placeholder="e.g. 2"><br><br>
+        <button class="btn-primary" onclick="calcCarbon()">Calculate</button>
+        <p id="carbonResult" style="margin-top:15px;"></p>
+      </div>
+    </div>
+
+    <!-- GAME -->
+    <div id="game" class="page">
+      <div class="card">
+        <h2>Plant Guardian Mini‑Game</h2>
+        <p><strong>Health:</strong> <span id="plantHealth">100</span> / 100</p>
+        <p><strong>Moisture:</strong> <span id="gameMoisture">50</span>%</p>
+        <p><strong>Temperature:</strong> <span id="gameTemp">24</span>°C</p>
+        <p><strong>Level:</strong> <span id="plantLevel">1</span></p>
+        <p id="gameStatus">Your plant has just been planted. Take care of it!</p>
+        <div id="plantSprite" style="font-size:80px; text-align:center; margin:20px 0;">🌱</div>
+        <button class="btn-primary" onclick="waterPlant()">💧 Water</button>
+        <button class="btn-primary" onclick="shadePlant()">🌳 Shade</button>
+        <button class="btn-primary" onclick="sunPlant()">☀️ More Sun</button>
+        <button class="btn-primary" onclick="fertilizePlant()">🌿 Fertilizer</button>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="leaderboard" class="page">
+      <div class="card">
+        <h2>Leaderboard</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Level</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="achievements" class="page">
+      <div class="card">
+        <h2>Achievements</h2>
+        <ul id="achievementList"></ul>
+      </div>
+    </div>
+
+    <!-- BIOGRAPHY -->
+    <div id="biography" class="page">
+      <div class="card">
+        <h2>Biography</h2>
+        <p><strong>The owner of Plant Monitor is a 13‑year‑old student named Mohamed Ali Naiyer. He studies at Merryland International School.</strong></p>
+        <p>Mohamed began learning Arduino when he built a solar tracker for the SDG Science Exhibition. Since then, he has developed a strong passion for electronics, robotics, and smart systems.</p>
+        <p>His hobbies include solving Rubik’s cubes, reading, and working on robotics projects. His favorite subjects are Math, Computer Science, and Physics. Mohamed’s dream is to become a software engineer in the future.</p>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="about" class="page">
+      <div class="card">
+        <h2>About This Website</h2>
+        <p>This website is the official dashboard for the Plant Monitor system.</p>
+        <ul>
+          <li>View live soil moisture readings</li>
+          <li>View live soil temperature readings</li>
+          <li>Track plant health over time</li>
+          <li>Adjust system settings such as the dry threshold</li>
+          <li>Connect directly to the Arduino using USB</li>
+          <li>View real‑time graphs of sensor data</li>
+          <li>Monitor global climate trends</li>
+          <li>Play a plant‑care mini‑game and compete on a leaderboard</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SIGN IN -->
+    <div id="signin" class="page">
+      <div class="card">
+        <h2>Sign In</h2>
+        <form class="auth-form" onsubmit="handleSignIn(event)">
+          <div>
+            <label>Email</label>
+            <input id="signinEmail" type="email" required placeholder="you@example.com" />
+          </div>
+          <div>
+            <label>Password</label>
+            <input id="signinPassword" type="password" required placeholder="••••••••" />
+          </div>
+          <button class="btn-primary" type="submit">Sign In</button>
+          <p class="auth-note">
+            Don’t have an account?
+            <span class="link" onclick="showPage('signup', null)">Create one</span>
+          </p>
+          <p class="auth-note">
+            Admin (for testing): admin@example.com / AdminPass123
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- SIGN UP -->
+    <div id="signup" class="page">
+      <div class="card">
+        <h2>Create Account</h2>
+        <form class="auth-form" onsubmit="handleSignUp(event)">
+          <div>
+            <label>Email</label>
+            <input id="signupEmail" type="email" required placeholder="you@example.com" />
+          </div>
+          <div>
+            <label>Password</label>
+            <input id="signupPassword" type="password" required placeholder="••••••••" />
+          </div>
+          <button class="btn-primary" type="submit">Create Account</button>
+          <p class="auth-note">
+            Already have an account?
+            <span class="link" onclick="showPage('signin', null)">Sign in</span>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- ADMIN / USER MANAGEMENT -->
+    <div id="admin" class="page">
+      <div class="card">
+        <h2>User Management (Admin)</h2>
+        <p>All registered users:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Email</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ===================== LEADERBOARD PAGE ===================== -->
-  <div id="leaderboard" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Leaderboard</div>
-      <div class="logo-subtitle">Top Plant Guardians</div>
-    </div>
-
-    <div class="card">
-      <table id="leaderboardTable">
-        <thead>
-          <tr>
-            <th>Rank</th>
-            <th>Player</th>
-            <th>Level</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody id="leaderboardBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ===================== ACHIEVEMENTS PAGE ===================== -->
-  <div id="achievements" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Achievements</div>
-      <div class="logo-subtitle">Milestones you’ve unlocked</div>
-    </div>
-
-    <div class="card">
-      <ul id="achievementList"></ul>
-    </div>
-  </div>
-
-  <!-- ===================== BIOGRAPHY PAGE ===================== -->
-  <div id="biography" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">Biography</div>
-      <div class="logo-subtitle">About the creator</div>
-    </div>
-
-    <div class="card">
-      <p><strong>The owner of Plant Monitor is a 13‑year‑old student named Mohamed Ali Naiyer. He studies at Merryland International School.</strong></p>
-      <p>Mohamed began learning Arduino when he built a solar tracker for the SDG Science Exhibition. Since then, he has developed a strong passion for electronics, robotics, and smart systems.</p>
-      <p>His hobbies include solving Rubik’s cubes, reading, and working on robotics projects. His favorite subjects are Math, Computer Science, and Physics. Mohamed’s dream is to become a software engineer in the future.</p>
-    </div>
-  </div>
-
-  <!-- ===================== ABOUT PAGE ===================== -->
-  <div id="about" class="main" style="display:none;">
-    <div class="logo-header">
-      <div class="logo-title">About This Website</div>
-      <div class="logo-subtitle">What Plant Monitor can do</div>
-    </div>
-
-    <div class="card">
-      <p>This website is the official dashboard for the Plant Monitor system.</p>
-      <p>It allows users to:</p>
-      <ul>
-        <li>View live soil moisture readings</li>
-        <li>View live soil temperature readings</li>
-        <li>Track plant health over time</li>
-        <li>Adjust system settings such as the dry threshold</li>
-        <li>Connect directly to the Arduino using USB</li>
-        <li>View real‑time graphs of sensor data</li>
-        <li>Monitor global climate trends</li>
-        <li>Play a plant‑care mini‑game and compete on a leaderboard</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ===================== SCRIPTS ===================== -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <script>
-    let port, writer, reader;
+    /* ===== NAV / PAGES ===== */
+    function showPage(id, navElement) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      const page = document.getElementById(id);
+      if (page) page.classList.add("active");
 
-    function showPage(page, element) {
-      document.querySelectorAll(".main").forEach(div => div.style.display = "none");
-      document.getElementById(page).style.display = "block";
-      document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
-      if (element) element.classList.add("active");
+      document.querySelectorAll(".nav-link").forEach(n => n.classList.remove("active"));
+      if (navElement && navElement.classList.contains("nav-link")) {
+        navElement.classList.add("active");
+      } else if (id === "dashboard") {
+        document.querySelectorAll(".nav-link")[0].classList.add("active");
+      }
     }
+
+    /* ===== USB & SENSORS ===== */
+    let port, writer, reader;
 
     async function connectUSB() {
       try {
@@ -520,18 +580,16 @@
       document.getElementById("carbonResult").innerText = msg;
     }
 
-    let moistureData = [];
-    let tempData = [];
-
+    /* ===== CHARTS ===== */
     const moistureChart = new Chart(document.getElementById("moistureChart"), {
       type: 'line',
       data: {
         labels: [],
         datasets: [{
           label: 'Soil Moisture (%)',
-          data: moistureData,
-          borderColor: '#0071e3',
-          backgroundColor: 'rgba(0,113,227,0.15)',
+          data: [],
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.2)',
           tension: 0.3
         }]
       }
@@ -543,9 +601,9 @@
         labels: [],
         datasets: [{
           label: 'Soil Temperature (°C)',
-          data: tempData,
-          borderColor: '#ff9500',
-          backgroundColor: 'rgba(255,149,0,0.15)',
+          data: [],
+          borderColor: '#f97316',
+          backgroundColor: 'rgba(249,115,22,0.2)',
           tension: 0.3
         }]
       }
@@ -617,66 +675,60 @@
       years: [1880, 1900, 1920, 1940, 1960, 1980, 2000, 2010, 2020, 2024],
       temps: [-0.12, -0.08, -0.02, 0.03, 0.02, 0.15, 0.42, 0.72, 0.98, 1.29]
     };
-
     const co2Data = {
       years: [1960, 1980, 2000, 2010, 2020, 2024],
       ppm: [316, 338, 369, 390, 414, 421]
     };
-
     const seaLevelData = {
       years: [1900, 1950, 2000, 2010, 2020, 2024],
       mm: [0, 40, 120, 150, 200, 230]
     };
 
     function createClimateCharts() {
-      const gt = document.getElementById("globalTempChart");
-      const co = document.getElementById("co2Chart");
-      const sl = document.getElementById("seaLevelChart");
-      if (!gt || !co || !sl) return;
-
-      new Chart(gt, {
+      new Chart(document.getElementById("globalTempChart"), {
         type: 'line',
         data: {
           labels: globalTempData.years,
           datasets: [{
             label: "Temperature Anomaly (°C)",
             data: globalTempData.temps,
-            borderColor: "#0071e3",
-            backgroundColor: "rgba(0,113,227,0.15)",
+            borderColor: "#3b82f6",
+            backgroundColor: "rgba(59,130,246,0.2)",
             tension: 0.3
           }]
         }
       });
 
-      new Chart(co, {
+      new Chart(document.getElementById("co2Chart"), {
         type: 'line',
         data: {
           labels: co2Data.years,
           datasets: [{
             label: "CO₂ (ppm)",
             data: co2Data.ppm,
-            borderColor: "#34c759",
-            backgroundColor: "rgba(52,199,89,0.15)",
+            borderColor: "#10b981",
+            backgroundColor: "rgba(16,185,129,0.2)",
             tension: 0.3
           }]
         }
       });
 
-      new Chart(sl, {
+      new Chart(document.getElementById("seaLevelChart"), {
         type: 'line',
         data: {
           labels: seaLevelData.years,
           datasets: [{
             label: "Sea Level Rise (mm)",
             data: seaLevelData.mm,
-            borderColor: "#ff9500",
-            backgroundColor: "rgba(255,149,0,0.15)",
+            borderColor: "#f59e0b",
+            backgroundColor: "rgba(245,158,11,0.2)",
             tension: 0.3
           }]
         }
       });
     }
 
+    /* ===== GAME ===== */
     let gameMoisture = 50;
     let gameTemp = 24;
     let plantHealth = 100;
@@ -857,27 +909,95 @@
       updateGameUI();
     }, 1000);
 
-    setInterval(() => {
-      if (plantHealth <= 0) return;
-      const events = [
-        { msg: "A cloud passed by. Temperature drops!", temp: -2 },
-        { msg: "Strong sun! Temperature rises!", temp: +3 },
-        { msg: "Dry wind! Moisture decreases!", moisture: -5 },
-        { msg: "Light rain! Moisture increases!", moisture: +5 }
-      ];
-      const e = events[Math.floor(Math.random() * events.length)];
-      alert("🌦️ Event: " + e.msg);
-      if (e.temp) gameTemp += e.temp;
-      if (e.moisture) gameMoisture += e.moisture;
-      updateGameUI();
-    }, 20000);
+    /* ===== AUTH / USERS ===== */
+    const ADMIN_EMAIL = "admin@example.com";
+    const ADMIN_PASS = "AdminPass123";
 
+    function getUsers() {
+      let users = JSON.parse(localStorage.getItem("users") || "[]");
+      if (!users.find(u => u.email === ADMIN_EMAIL)) {
+        users.push({ email: ADMIN_EMAIL, password: ADMIN_PASS, role: "admin" });
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+      return users;
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem("users", JSON.stringify(users));
+    }
+
+    function handleSignUp(e) {
+      e.preventDefault();
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value;
+
+      let users = getUsers();
+      if (users.find(u => u.email === email)) {
+        alert("User already exists.");
+        return;
+      }
+      users.push({ email, password, role: "user" });
+      saveUsers(users);
+      alert("Account created. You can now sign in.");
+      showPage("signin", null);
+    }
+
+    function handleSignIn(e) {
+      e.preventDefault();
+      const email = document.getElementById("signinEmail").value.trim();
+      const password = document.getElementById("signinPassword").value;
+
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+      if (!user) {
+        alert("Invalid email or password.");
+        return;
+      }
+
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      updateCurrentUserUI();
+      alert("Signed in as " + user.email);
+      showPage("dashboard", null);
+      if (user.role === "admin") renderUserTable();
+    }
+
+    function getCurrentUser() {
+      return JSON.parse(localStorage.getItem("currentUser") || "null");
+    }
+
+    function updateCurrentUserUI() {
+      const user = getCurrentUser();
+      const label = document.getElementById("currentUserLabel");
+      const adminLink = document.querySelector(".admin-link");
+      if (user) {
+        label.innerText = user.email + (user.role === "admin" ? " (admin)" : "");
+        if (user.role === "admin") adminLink.style.display = "inline-block";
+        else adminLink.style.display = "none";
+      } else {
+        label.innerText = "Not signed in";
+        adminLink.style.display = "none";
+      }
+    }
+
+    function renderUserTable() {
+      const users = getUsers();
+      const body = document.getElementById("userTableBody");
+      body.innerHTML = "";
+      users.forEach((u, i) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${i + 1}</td><td>${u.email}</td><td>${u.role}</td>`;
+        body.appendChild(tr);
+      });
+    }
+
+    /* ===== INIT ===== */
     loadAchievements();
     renderAchievements();
     renderLeaderboard();
     updateGameUI();
     createClimateCharts();
+    getUsers();
+    updateCurrentUserUI();
   </script>
-
 </body>
 </html>
