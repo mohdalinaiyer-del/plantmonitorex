@@ -14,7 +14,7 @@
     }
     a { text-decoration: none; }
 
-    /* ===== TOP NAV (WAVENET STYLE) ===== */
+    /* ===== TOP NAV (CLEAN) ===== */
     .top-nav {
       position: sticky;
       top: 0;
@@ -27,17 +27,9 @@
       padding: 10px 40px;
     }
     .nav-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
       font-weight: 600;
       color: #111827;
-    }
-    .nav-logo-dot {
-      width: 26px;
-      height: 26px;
-      border-radius: 8px;
-      background: radial-gradient(circle at top left, #2563eb, #1d4ed8);
+      font-size: 16px;
     }
     .nav-center {
       display: flex;
@@ -237,7 +229,6 @@
   <!-- TOP NAV -->
   <div class="top-nav">
     <div class="nav-left">
-      <div class="nav-logo-dot"></div>
       <span>Plant Monitor</span>
     </div>
     <div class="nav-center">
@@ -431,8 +422,8 @@
         <h2>Sign In</h2>
         <form class="auth-form" onsubmit="handleSignIn(event)">
           <div>
-            <label>Email</label>
-            <input id="signinEmail" type="email" required placeholder="you@example.com" />
+            <label>Email or username</label>
+            <input id="signinEmail" type="text" required placeholder="you@example.com or username" />
           </div>
           <div>
             <label>Password</label>
@@ -443,9 +434,6 @@
             Don’t have an account?
             <span class="link" onclick="showPage('signup', null)">Create one</span>
           </p>
-          <p class="auth-note">
-            Admin (for testing): admin@example.com / AdminPass123
-          </p>
         </form>
       </div>
     </div>
@@ -455,6 +443,10 @@
       <div class="card">
         <h2>Create Account</h2>
         <form class="auth-form" onsubmit="handleSignUp(event)">
+          <div>
+            <label>Full Name</label>
+            <input id="signupName" type="text" required placeholder="Your name" />
+          </div>
           <div>
             <label>Email</label>
             <input id="signupEmail" type="email" required placeholder="you@example.com" />
@@ -481,7 +473,8 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Email</th>
+              <th>Name</th>
+              <th>Email / Username</th>
               <th>Role</th>
             </tr>
           </thead>
@@ -734,6 +727,7 @@
     let plantHealth = 100;
     let plantLevel = 1;
     let gameTicks = 0;
+    let playerName = null;
 
     function updateGameUI() {
       document.getElementById("gameMoisture").innerText = gameMoisture;
@@ -852,8 +846,10 @@
     }
 
     function addScoreToLeaderboard(playerName, level, score) {
+      if (!playerName) return;
       let board = getLeaderboard();
       board.push({ name: playerName, level: level, score: score });
+      board = board.filter(entry => entry.name.toLowerCase() !== "mohamed");
       board.sort((a, b) => b.score - a.score);
       board = board.slice(0, 10);
       saveLeaderboard(board);
@@ -899,8 +895,11 @@
         if (plantHealth === 100) unlockAchievement("perfectHealth", "Perfect Health 🌟");
 
         const score = plantLevel * plantHealth * 10 + awardAchievementPoints();
-        if (!window.playerName) window.playerName = prompt("Enter your player name:");
-        addScoreToLeaderboard(window.playerName || "Player", plantLevel, score);
+        if (!playerName) {
+          const currentUser = getCurrentUser();
+          playerName = currentUser && currentUser.name ? currentUser.name : "Player";
+        }
+        addScoreToLeaderboard(playerName, plantLevel, score);
       }
 
       if (gameTicks === 300) unlockAchievement("survivor", "Survived 5 Minutes ⏳");
@@ -909,14 +908,28 @@
       updateGameUI();
     }, 1000);
 
+    /* ===== LEADERBOARD RESET ===== */
+    function weeklyReset() {
+      const lastReset = localStorage.getItem("leaderboardResetDate");
+      const now = Date.now();
+
+      if (!lastReset || now - lastReset > 7 * 24 * 60 * 60 * 1000) {
+        localStorage.setItem("leaderboard", JSON.stringify([]));
+        localStorage.setItem("leaderboardResetDate", now);
+      }
+    }
+
+    // Immediate reset now (as requested)
+    localStorage.setItem("leaderboard", JSON.stringify([]));
+
     /* ===== AUTH / USERS ===== */
-    const ADMIN_EMAIL = "admin@example.com";
-    const ADMIN_PASS = "AdminPass123";
+    const ADMIN_EMAIL = "mohamed";
+    const ADMIN_PASS = "3103";
 
     function getUsers() {
       let users = JSON.parse(localStorage.getItem("users") || "[]");
       if (!users.find(u => u.email === ADMIN_EMAIL)) {
-        users.push({ email: ADMIN_EMAIL, password: ADMIN_PASS, role: "admin" });
+        users.push({ email: ADMIN_EMAIL, password: ADMIN_PASS, name: "Admin", role: "admin" });
         localStorage.setItem("users", JSON.stringify(users));
       }
       return users;
@@ -928,6 +941,7 @@
 
     function handleSignUp(e) {
       e.preventDefault();
+      const name = document.getElementById("signupName").value.trim();
       const email = document.getElementById("signupEmail").value.trim();
       const password = document.getElementById("signupPassword").value;
 
@@ -936,7 +950,7 @@
         alert("User already exists.");
         return;
       }
-      users.push({ email, password, role: "user" });
+      users.push({ email, password, name, role: "user" });
       saveUsers(users);
       alert("Account created. You can now sign in.");
       showPage("signin", null);
@@ -944,19 +958,19 @@
 
     function handleSignIn(e) {
       e.preventDefault();
-      const email = document.getElementById("signinEmail").value.trim();
+      const emailOrUser = document.getElementById("signinEmail").value.trim();
       const password = document.getElementById("signinPassword").value;
 
       const users = getUsers();
-      const user = users.find(u => u.email === email && u.password === password);
+      const user = users.find(u => u.email === emailOrUser && u.password === password);
       if (!user) {
-        alert("Invalid email or password.");
+        alert("Invalid username/email or password.");
         return;
       }
 
       localStorage.setItem("currentUser", JSON.stringify(user));
       updateCurrentUserUI();
-      alert("Signed in as " + user.email);
+      alert("Signed in as " + (user.name || user.email));
       showPage("dashboard", null);
       if (user.role === "admin") renderUserTable();
     }
@@ -970,7 +984,7 @@
       const label = document.getElementById("currentUserLabel");
       const adminLink = document.querySelector(".admin-link");
       if (user) {
-        label.innerText = user.email + (user.role === "admin" ? " (admin)" : "");
+        label.innerText = (user.name ? user.name + " — " : "") + user.email + (user.role === "admin" ? " (admin)" : "");
         if (user.role === "admin") adminLink.style.display = "inline-block";
         else adminLink.style.display = "none";
       } else {
@@ -985,7 +999,7 @@
       body.innerHTML = "";
       users.forEach((u, i) => {
         const tr = document.createElement("tr");
-        tr.innerHTML = `<td>${i + 1}</td><td>${u.email}</td><td>${u.role}</td>`;
+        tr.innerHTML = `<td>${i + 1}</td><td>${u.name || ""}</td><td>${u.email}</td><td>${u.role}</td>`;
         body.appendChild(tr);
       });
     }
@@ -993,6 +1007,7 @@
     /* ===== INIT ===== */
     loadAchievements();
     renderAchievements();
+    weeklyReset();
     renderLeaderboard();
     updateGameUI();
     createClimateCharts();
