@@ -1,4 +1,4 @@
-<index.html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Plant Monitor Dashboard</title>
@@ -6,179 +6,182 @@
 
   <!-- ===================== CSS ===================== -->
   <style>
+    /* ====== GLOBAL ====== */
     body {
       margin: 0;
-      font-family: "Segoe UI", system-ui, sans-serif;
-      background: radial-gradient(circle at top, #0b1b3b 0, #020617 45%, #000 100%);
-      color: #E5E7EB;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      background: #f5f5f7;
+      color: #1d1d1f;
     }
 
-    /* Sidebar */
+    /* ====== SIDEBAR ====== */
     .sidebar {
       width: 240px;
       height: 100vh;
-      background: #020617;
-      border-right: 1px solid #1F2937;
       position: fixed;
       top: 0;
       left: 0;
-      padding-top: 20px;
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.7);
+      border-right: 1px solid rgba(0,0,0,0.08);
+      padding-top: 30px;
     }
 
     .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 20px;
-      color: #9CA3AF;
+      display: block;
+      padding: 14px 25px;
+      margin: 6px 12px;
+      border-radius: 12px;
+      color: #1d1d1f;
       text-decoration: none;
       font-size: 15px;
-      letter-spacing: 0.03em;
-      transition: background 0.2s, color 0.2s, transform 0.1s;
-      cursor: pointer;
+      transition: 0.2s;
     }
 
     .sidebar a:hover {
-      background: rgba(37, 99, 235, 0.15);
-      color: #E5E7EB;
-      transform: translateX(2px);
+      background: rgba(0,0,0,0.05);
     }
 
     .active {
-      background: linear-gradient(90deg, #1D4ED8, #3B82F6);
+      background: #0071e3;
       color: white !important;
     }
 
-    /* Main content */
+    /* ====== MAIN CONTENT ====== */
     .main {
       margin-left: 260px;
-      padding: 24px;
+      padding: 40px;
       min-height: 100vh;
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.3s ease;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Cards */
-    .card {
-      background: radial-gradient(circle at top left, #111827, #020617);
-      border-radius: 16px;
-      border: 1px solid #1F2937;
-      padding: 18px 20px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
-      margin-bottom: 20px;
-    }
-
-    button {
-      background: linear-gradient(90deg, #2563EB, #4F46E5);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      cursor: pointer;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    button:hover {
-      filter: brightness(1.1);
-    }
-
-    input {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #1F2937;
-      background: #020617;
-      color: #E5E7EB;
-      width: 220px;
-    }
-
-    canvas {
-      background: #020617;
-      border-radius: 16px;
-      border: 1px solid #1F2937;
-      margin-bottom: 20px;
-    }
-
-    /* Logo header */
+    /* ====== TOP BAR (MACOS STYLE) ====== */
     .logo-header {
-      background: linear-gradient(90deg, #1D4ED8, #3B82F6);
-      color: white;
-      padding: 15px 20px;
-      border-radius: 16px;
-      margin-bottom: 20px;
-      box-shadow: 0 18px 45px rgba(37, 99, 235, 0.7);
+      background: linear-gradient(135deg, #ffffff, #f0f0f5);
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
+
+    .window-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot.red { background: #ff5f57; }
+    .dot.yellow { background: #febc2e; }
+    .dot.green { background: #28c840; }
 
     .logo-title {
-      font-size: 26px;
-      font-weight: bold;
+      font-size: 22px;
+      font-weight: 600;
     }
 
     .logo-subtitle {
+      font-size: 13px;
+      color: #6e6e73;
+    }
+
+    /* ====== CARDS ====== */
+    .card {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(25px);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ====== BUTTONS ====== */
+    button {
+      background: #0071e3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 12px;
       font-size: 14px;
-      opacity: 0.9;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    /* Biography image */
-    .bio-image {
-      display: block;
-      margin: 0 auto 20px auto;
-      width: 100%;
-      max-width: 250px;
-      border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    button:hover {
+      background: #0a84ff;
     }
 
-    .bio-text {
-      font-size: 16px;
-      line-height: 1.6;
+    /* ====== INPUTS ====== */
+    input {
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.15);
+      width: 250px;
+      font-size: 14px;
     }
 
-    /* Live indicator */
+    /* ====== CANVAS ====== */
+    canvas {
+      background: white;
+      border-radius: 20px;
+      padding: 10px;
+      border: 1px solid rgba(0,0,0,0.1);
+      margin-bottom: 10px;
+    }
+
+    /* LIVE INDICATOR */
     #liveIndicator.live {
-      color: #3B82F6;
-      text-shadow: 0 0 10px #3B82F6, 0 0 20px #1D4ED8;
-      animation: pulse 1s infinite alternate;
-      font-weight: bold;
+      color: #0071e3;
+      font-weight: 600;
       margin-left: 10px;
     }
 
-    @keyframes pulse {
-      from { opacity: 0.5; }
-      to { opacity: 1; }
-    }
-
-    /* Leaderboard table */
+    /* LEADERBOARD TABLE */
     #leaderboardTable {
       border-collapse: collapse;
       width: 100%;
-      color: #E5E7EB;
-      font-size: 15px;
+      color: #1d1d1f;
+      font-size: 14px;
     }
 
     #leaderboardTable th {
-      background: #1E3A8A;
-      padding: 12px;
+      background: #f2f2f7;
+      padding: 10px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      font-size: 12px;
     }
 
     #leaderboardTable td {
       padding: 10px;
-      border-bottom: 1px solid #1F2937;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
     }
 
     #leaderboardTable tr:nth-child(even) {
-      background: rgba(30, 58, 138, 0.2);
+      background: #fafafa;
     }
 
     #leaderboardTable tr:hover {
-      background: rgba(59, 130, 246, 0.3);
+      background: #e5f1ff;
       cursor: pointer;
     }
   </style>
@@ -205,8 +208,17 @@
   <!-- ===================== DASHBOARD ===================== -->
   <div id="dashboard" class="main">
     <div class="logo-header">
-      <div class="logo-title">🌱 PLANT MONITOR</div>
-      <div class="logo-subtitle">Eco‑Smart Sensor & Climate Dashboard</div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div class="window-dots">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
+        </div>
+        <div>
+          <div class="logo-title">Plant Monitor</div>
+          <div class="logo-subtitle">Eco‑Smart Sensor & Climate Dashboard</div>
+        </div>
+      </div>
     </div>
 
     <div class="card">
@@ -228,7 +240,10 @@
 
   <!-- ===================== SENSORS PAGE ===================== -->
   <div id="sensors" class="main" style="display:none;">
-    <h1>Live Sensor Data</h1>
+    <div class="logo-header">
+      <div class="logo-title">Live Sensor Data</div>
+      <div class="logo-subtitle">Real‑time readings from your plant</div>
+    </div>
 
     <div class="card">
       <h2>Soil Moisture</h2>
@@ -249,7 +264,10 @@
 
   <!-- ===================== ANALYTICS PAGE ===================== -->
   <div id="analytics" class="main" style="display:none;">
-    <h1>Analytics Dashboard</h1>
+    <div class="logo-header">
+      <div class="logo-title">Analytics</div>
+      <div class="logo-subtitle">History of your plant’s environment</div>
+    </div>
 
     <div class="card">
       <h2>Soil Moisture History</h2>
@@ -264,7 +282,10 @@
 
   <!-- ===================== CLIMATE PAGE ===================== -->
   <div id="climate" class="main" style="display:none;">
-    <h1>Global Climate Trends</h1>
+    <div class="logo-header">
+      <div class="logo-title">Global Climate Trends</div>
+      <div class="logo-subtitle">See how the planet is changing</div>
+    </div>
 
     <div class="card">
       <h2>Global Temperature Increase (1880–2024)</h2>
@@ -284,7 +305,10 @@
 
   <!-- ===================== SETTINGS PAGE ===================== -->
   <div id="settings" class="main" style="display:none;">
-    <h1>Settings</h1>
+    <div class="logo-header">
+      <div class="logo-title">Settings</div>
+      <div class="logo-subtitle">Tune your plant monitor</div>
+    </div>
 
     <div class="card">
       <h2>Set Dry Threshold</h2>
@@ -295,10 +319,13 @@
 
   <!-- ===================== CARBON FOOTPRINT PAGE ===================== -->
   <div id="carbon" class="main" style="display:none;">
-    <h1>Carbon Footprint Calculator</h1>
+    <div class="logo-header">
+      <div class="logo-title">Carbon Footprint Calculator</div>
+      <div class="logo-subtitle">Estimate your daily CO₂ emissions</div>
+    </div>
 
     <div class="card">
-      <h2>Estimate Your Daily CO₂ Emissions</h2>
+      <h2>Daily Activity</h2>
 
       <label>Car travel (km per day):</label><br>
       <input id="carKm" type="number" placeholder="e.g. 20"><br><br>
@@ -317,7 +344,10 @@
 
   <!-- ===================== GAME PAGE ===================== -->
   <div id="game" class="main" style="display:none;">
-    <h1>Plant Guardian Mini‑Game</h1>
+    <div class="logo-header">
+      <div class="logo-title">Plant Guardian Mini‑Game</div>
+      <div class="logo-subtitle">Keep your plant alive and thriving</div>
+    </div>
 
     <div class="card">
       <p><strong>Health:</strong> <span id="plantHealth">100</span> / 100</p>
@@ -326,7 +356,9 @@
       <p><strong>Level:</strong> <span id="plantLevel">1</span></p>
       <p id="gameStatus">Your plant has just been planted. Take care of it!</p>
 
-      <img id="plantSprite" src="plant_stage1.png" style="width:150px; display:block; margin:20px auto;">
+      <div id="plantSprite" style="font-size:80px; text-align:center; margin:20px 0;">
+        🌱
+      </div>
 
       <button onclick="waterPlant()">💧 Water</button>
       <button onclick="shadePlant()">🌳 Shade</button>
@@ -337,7 +369,10 @@
 
   <!-- ===================== LEADERBOARD PAGE ===================== -->
   <div id="leaderboard" class="main" style="display:none;">
-    <h1>🏆 Plant Guardian Leaderboard</h1>
+    <div class="logo-header">
+      <div class="logo-title">Leaderboard</div>
+      <div class="logo-subtitle">Top Plant Guardians</div>
+    </div>
 
     <div class="card">
       <table id="leaderboardTable">
@@ -356,7 +391,10 @@
 
   <!-- ===================== ACHIEVEMENTS PAGE ===================== -->
   <div id="achievements" class="main" style="display:none;">
-    <h1>🎖️ Achievements</h1>
+    <div class="logo-header">
+      <div class="logo-title">Achievements</div>
+      <div class="logo-subtitle">Milestones you’ve unlocked</div>
+    </div>
 
     <div class="card">
       <ul id="achievementList"></ul>
@@ -365,21 +403,24 @@
 
   <!-- ===================== BIOGRAPHY PAGE ===================== -->
   <div id="biography" class="main" style="display:none;">
-    <h1>Biography</h1>
+    <div class="logo-header">
+      <div class="logo-title">Biography</div>
+      <div class="logo-subtitle">About the creator</div>
+    </div>
 
     <div class="card">
-      <img src="profile.png" alt="Mohamed Ali Naiyer" class="bio-image">
-      <div class="bio-text">
-        <p><strong>The owner of Plant Monitor is a 13‑year‑old student named Mohamed Ali Naiyer. He studies at Merryland International School.</strong></p>
-        <p>Mohamed began learning Arduino when he built a solar tracker for the SDG Science Exhibition. Since then, he has developed a strong passion for electronics, robotics, and smart systems.</p>
-        <p>His hobbies include solving Rubik’s cubes, reading, and working on robotics projects. His favorite subjects are Math, Computer Science, and Physics. Mohamed’s dream is to become a software engineer in the future.</p>
-      </div>
+      <p><strong>The owner of Plant Monitor is a 13‑year‑old student named Mohamed Ali Naiyer. He studies at Merryland International School.</strong></p>
+      <p>Mohamed began learning Arduino when he built a solar tracker for the SDG Science Exhibition. Since then, he has developed a strong passion for electronics, robotics, and smart systems.</p>
+      <p>His hobbies include solving Rubik’s cubes, reading, and working on robotics projects. His favorite subjects are Math, Computer Science, and Physics. Mohamed’s dream is to become a software engineer in the future.</p>
     </div>
   </div>
 
   <!-- ===================== ABOUT PAGE ===================== -->
   <div id="about" class="main" style="display:none;">
-    <h1>About This Website</h1>
+    <div class="logo-header">
+      <div class="logo-title">About This Website</div>
+      <div class="logo-subtitle">What Plant Monitor can do</div>
+    </div>
 
     <div class="card">
       <p>This website is the official dashboard for the Plant Monitor system.</p>
@@ -394,7 +435,6 @@
         <li>Monitor global climate trends</li>
         <li>Play a plant‑care mini‑game and compete on a leaderboard</li>
       </ul>
-      <p>The website is designed to be simple, modern, and easy to use. It acts as the main control center for the Plant Monitor hardware system.</p>
     </div>
   </div>
 
@@ -404,45 +444,36 @@
   <script>
     let port, writer, reader;
 
-    /* PAGE SWITCHING */
     function showPage(page, element) {
       document.querySelectorAll(".main").forEach(div => div.style.display = "none");
       document.getElementById(page).style.display = "block";
-
       document.querySelectorAll(".sidebar a").forEach(a => a.classList.remove("active"));
       if (element) element.classList.add("active");
     }
 
-    /* USB CONNECTION */
     async function connectUSB() {
       try {
         port = await navigator.serial.requestPort();
         await port.open({ baudRate: 9600 });
-
         writer = port.writable.getWriter();
         reader = port.readable.getReader();
-
         alert("Connected to Arduino!");
       } catch (err) {
         alert("Connection failed");
       }
     }
 
-    /* SEND COMMAND */
     async function sendCommand(cmd) {
       if (!writer || !reader) return "--";
       const data = new TextEncoder().encode(cmd + "\n");
       await writer.write(data);
-
       const { value } = await reader.read();
       return new TextDecoder().decode(value).trim();
     }
 
-    /* PLANT HEALTH EVALUATION */
     function evaluatePlant(m, t) {
       m = Number(m);
       t = Number(t);
-
       let problems = [];
       let status = "Healthy 🌿";
 
@@ -454,7 +485,6 @@
       if (problems.length > 0) status = "Issues detected ⚠️";
 
       document.getElementById("healthStatus").innerText = status;
-
       const list = document.getElementById("problemList");
       list.innerHTML = "";
       problems.forEach(p => {
@@ -464,7 +494,6 @@
       });
     }
 
-    /* SET DRY LEVEL */
     async function setDryLevel() {
       let value = document.getElementById("dryInput").value;
       if (!value) return;
@@ -472,7 +501,6 @@
       alert("Dry level updated");
     }
 
-    /* CARBON FOOTPRINT */
     function calcCarbon() {
       const carKm = Number(document.getElementById("carKm").value || 0);
       const kwh   = Number(document.getElementById("kwh").value || 0);
@@ -483,7 +511,6 @@
       const foodCO2  = meals * 2.5;
 
       const total = carCO2 + powerCO2 + foodCO2;
-
       let msg = `Your estimated daily footprint is ${total.toFixed(1)} kg CO₂. `;
 
       if (total < 5) msg += "Great! Your footprint is relatively low. 🌍";
@@ -493,7 +520,6 @@
       document.getElementById("carbonResult").innerText = msg;
     }
 
-    /* GRAPHS: MOISTURE & TEMP */
     let moistureData = [];
     let tempData = [];
 
@@ -504,8 +530,8 @@
         datasets: [{
           label: 'Soil Moisture (%)',
           data: moistureData,
-          borderColor: '#3B82F6',
-          backgroundColor: 'rgba(59,130,246,0.2)',
+          borderColor: '#0071e3',
+          backgroundColor: 'rgba(0,113,227,0.15)',
           tension: 0.3
         }]
       }
@@ -518,8 +544,8 @@
         datasets: [{
           label: 'Soil Temperature (°C)',
           data: tempData,
-          borderColor: '#F97316',
-          backgroundColor: 'rgba(249,115,22,0.2)',
+          borderColor: '#ff9500',
+          backgroundColor: 'rgba(255,149,0,0.15)',
           tension: 0.3
         }]
       }
@@ -530,7 +556,6 @@
 
       moistureChart.data.labels.push(time);
       moistureChart.data.datasets[0].data.push(m);
-
       if (moistureChart.data.labels.length > 60) {
         moistureChart.data.labels.shift();
         moistureChart.data.datasets[0].data.shift();
@@ -539,7 +564,6 @@
 
       tempChart.data.labels.push(time);
       tempChart.data.datasets[0].data.push(t);
-
       if (tempChart.data.labels.length > 60) {
         tempChart.data.labels.shift();
         tempChart.data.datasets[0].data.shift();
@@ -547,13 +571,11 @@
       tempChart.update();
     }
 
-    /* LIVE MODE */
     let liveUpdate = false;
     let liveInterval = null;
 
     function toggleLive() {
       liveUpdate = !liveUpdate;
-
       const btn = document.getElementById("liveToggle");
       const indicator = document.getElementById("liveIndicator");
 
@@ -572,17 +594,14 @@
 
     function startLiveGraphs() {
       if (liveInterval) clearInterval(liveInterval);
-
       liveInterval = setInterval(async () => {
         if (!writer || !reader) return;
-
         try {
           let m = await sendCommand("MOISTURE");
           let t = await sendCommand("TEMP");
 
           document.getElementById("moistureValue").innerText = m + " %";
           document.getElementById("tempValue").innerText = t + " °C";
-
           document.getElementById("moistureValue2").innerText = m + " %";
           document.getElementById("tempValue2").innerText = t + " °C";
 
@@ -594,7 +613,6 @@
       }, 1000);
     }
 
-    /* CLIMATE CHARTS */
     const globalTempData = {
       years: [1880, 1900, 1920, 1940, 1960, 1980, 2000, 2010, 2020, 2024],
       temps: [-0.12, -0.08, -0.02, 0.03, 0.02, 0.15, 0.42, 0.72, 0.98, 1.29]
@@ -610,58 +628,55 @@
       mm: [0, 40, 120, 150, 200, 230]
     };
 
-    let globalTempChart, co2Chart, seaLevelChart;
-
     function createClimateCharts() {
       const gt = document.getElementById("globalTempChart");
       const co = document.getElementById("co2Chart");
       const sl = document.getElementById("seaLevelChart");
       if (!gt || !co || !sl) return;
 
-      globalTempChart = new Chart(gt, {
+      new Chart(gt, {
         type: 'line',
         data: {
           labels: globalTempData.years,
           datasets: [{
             label: "Temperature Anomaly (°C)",
             data: globalTempData.temps,
-            borderColor: "#3B82F6",
-            backgroundColor: "rgba(59,130,246,0.2)",
+            borderColor: "#0071e3",
+            backgroundColor: "rgba(0,113,227,0.15)",
             tension: 0.3
           }]
         }
       });
 
-      co2Chart = new Chart(co, {
+      new Chart(co, {
         type: 'line',
         data: {
           labels: co2Data.years,
           datasets: [{
             label: "CO₂ (ppm)",
             data: co2Data.ppm,
-            borderColor: "#10B981",
-            backgroundColor: "rgba(16,185,129,0.2)",
+            borderColor: "#34c759",
+            backgroundColor: "rgba(52,199,89,0.15)",
             tension: 0.3
           }]
         }
       });
 
-      seaLevelChart = new Chart(sl, {
+      new Chart(sl, {
         type: 'line',
         data: {
           labels: seaLevelData.years,
           datasets: [{
             label: "Sea Level Rise (mm)",
             data: seaLevelData.mm,
-            borderColor: "#F59E0B",
-            backgroundColor: "rgba(245,158,11,0.2)",
+            borderColor: "#ff9500",
+            backgroundColor: "rgba(255,149,0,0.15)",
             tension: 0.3
           }]
         }
       });
     }
 
-    /* GAME LOGIC */
     let gameMoisture = 50;
     let gameTemp = 24;
     let plantHealth = 100;
@@ -675,17 +690,14 @@
       document.getElementById("plantLevel").innerText = plantLevel;
 
       let msg = "Your plant is doing okay. 🌿";
-
-      if (plantHealth <= 0) {
-        msg = "Your plant has died... Try again and manage conditions better. 💀";
-      } else {
+      if (plantHealth <= 0) msg = "Your plant has died... Try again. 💀";
+      else {
         if (gameMoisture < 30) msg = "Your plant is thirsty! 💧";
         if (gameMoisture > 80) msg = "Too much water! Roots are drowning. 🌊";
         if (gameTemp < 10) msg = "It's freezing! The plant is shivering. ❄️";
         if (gameTemp > 35) msg = "It's too hot! The plant is wilting. 🔥";
         if (plantHealth < 20) msg = "⚠️ Critical! Save your plant!";
       }
-
       document.getElementById("gameStatus").innerText = msg;
       updatePlantSprite();
     }
@@ -730,15 +742,12 @@
     }
 
     function updatePlantSprite() {
-      const img = document.getElementById("plantSprite");
-      if (!img) return;
-
-      if (plantLevel < 5) img.src = "plant_stage1.png";
-      else if (plantLevel < 10) img.src = "plant_stage2.png";
-      else img.src = "plant_stage3.png";
+      const sprite = document.getElementById("plantSprite");
+      if (plantLevel < 5) sprite.innerText = "🌱";
+      else if (plantLevel < 10) sprite.innerText = "🌿";
+      else sprite.innerText = "🌳";
     }
 
-    /* ACHIEVEMENTS */
     let achievements = {
       "firstWater": false,
       "level5": false,
@@ -765,7 +774,6 @@
       const list = document.getElementById("achievementList");
       if (!list) return;
       list.innerHTML = "";
-
       for (const key in achievements) {
         const li = document.createElement("li");
         li.innerText = `${key} — ${achievements[key] ? "Unlocked ✔" : "Locked 🔒"}`;
@@ -783,7 +791,6 @@
       return bonus;
     }
 
-    /* LEADERBOARD */
     function getLeaderboard() {
       return JSON.parse(localStorage.getItem("leaderboard") || "[]");
     }
@@ -794,16 +801,9 @@
 
     function addScoreToLeaderboard(playerName, level, score) {
       let board = getLeaderboard();
-
-      board.push({
-        name: playerName,
-        level: level,
-        score: score
-      });
-
+      board.push({ name: playerName, level: level, score: score });
       board.sort((a, b) => b.score - a.score);
       board = board.slice(0, 10);
-
       saveLeaderboard(board);
       renderLeaderboard();
     }
@@ -812,9 +812,7 @@
       const board = getLeaderboard();
       const body = document.getElementById("leaderboardBody");
       if (!body) return;
-
       body.innerHTML = "";
-
       board.forEach((entry, index) => {
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -827,10 +825,8 @@
       });
     }
 
-    /* GAME LOOP */
     setInterval(() => {
       if (plantHealth <= 0) return;
-
       gameTicks++;
 
       gameMoisture -= 2;
@@ -851,42 +847,31 @@
         if (plantHealth === 100) unlockAchievement("perfectHealth", "Perfect Health 🌟");
 
         const score = plantLevel * plantHealth * 10 + awardAchievementPoints();
-        if (!window.playerName) {
-          window.playerName = prompt("Enter your player name:");
-        }
+        if (!window.playerName) window.playerName = prompt("Enter your player name:");
         addScoreToLeaderboard(window.playerName || "Player", plantLevel, score);
       }
 
-      if (gameTicks === 300) {
-        unlockAchievement("survivor", "Survived 5 Minutes ⏳");
-      }
+      if (gameTicks === 300) unlockAchievement("survivor", "Survived 5 Minutes ⏳");
 
       clampGameValues();
       updateGameUI();
     }, 1000);
 
-    /* RANDOM EVENTS */
     setInterval(() => {
       if (plantHealth <= 0) return;
-
       const events = [
         { msg: "A cloud passed by. Temperature drops!", temp: -2 },
         { msg: "Strong sun! Temperature rises!", temp: +3 },
         { msg: "Dry wind! Moisture decreases!", moisture: -5 },
         { msg: "Light rain! Moisture increases!", moisture: +5 }
       ];
-
       const e = events[Math.floor(Math.random() * events.length)];
-
       alert("🌦️ Event: " + e.msg);
-
       if (e.temp) gameTemp += e.temp;
       if (e.moisture) gameMoisture += e.moisture;
-
       updateGameUI();
     }, 20000);
 
-    /* INIT */
     loadAchievements();
     renderAchievements();
     renderLeaderboard();
